@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPGBOXD</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RPGBoxd">
+    <link rel="apple-touch-icon" href="source/icons/192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="source/icons/192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="source/icons/512x512.png">
+
+    <script>
+    if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker
+        .register('./sw.js')
+        .then(() => {
+            console.log('Service Worker registrado!');
+        })
+        .catch((error) => {
+            console.log('Erro ao registrar SW:', error);
+        });
+    });
+    }
+    </script>
+</head>
+<body>
+   <!-- parte do fundo do parallax -->
+    <div class="parallax">
+    <!-- parte do conteúdo do parallax -->
+        <div class="parallax-overlay">
+            <div class="parallax-content">
+                <div class="logo"><img src="source/dice.png"></div>
+                <h1>RPGBOXD</h1>
+                <p>Seu catálogo de avaliação pessoal de sistemas de rpg</p>
+                <div class="header-stats" id="headerStats">
+                    <span>0 sistemas</span>
+                    <span>0.0 média</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="actions-bar">
+            <button class="btnAdicionar" id="btnAdicionar">Adicionar</button>
+            <div class="filtros">
+                <select id="filtroGenero">
+                    <option value="todos">Todos os Gêneros</option>
+                    <option value="fantasia">Fantasia</option>
+                    <option value="futurismo">Futurismo</option>
+                    <option value="sci-fi">Sci-Fi</option>
+                    <option value="terror">Terror</option>
+                </select>
+
+                <select id="filtroStatus">
+                    <option value="todos">Todos os Status</option>
+                    <option value="completo">Completo</option>
+                    <option value="quero">Quero jogar</option>
+                    <option value="incompleto">Incompleto</option>
+                    <option value="abandonado">Abandonado</option>
+                </select>
+
+                <select id="ordenacao">
+                    <option value="data-desc">Mais recente</option>
+                    <option value="data-asc">Mais antigo</option>
+                    <option value="nome-asc">Nome (A-Z)</option>
+                    <option value="nome-desc">Nome (Z-A)</option>
+                    <option value="nota-desc">Maior nota</option>
+                    <option value="nota-asc">Menor nota</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Os sistemas serão apresentados aqui -->
+        <div class="sistemas-lista" id="sistemasLista"></div>
+
+        <div id="mensagemVazia" class="mensagem-vazia">
+            <div class="logo"><img src="source/dice.png"></div>
+            <p>Não há sistemas avaliados. Clique em "Adicionar" para começar a avaliar seus sistemas de RPG favoritos!</p>
+        </div>
+    </main>
+
+    <div id="modelForm" class="modal">
+        <div class="modalContent">
+            <div class="modalHeader">
+                <h2 id="modalTitle">Adicionar Sistema</h2>
+                <span class="close">&times;</span>
+            </div>
+
+            <form id="rpgForm">
+                <input type="hidden" id="rpgId">
+                <div class="form-group">
+                    <label for="rpgnome">Nome do Sistema</label>
+                    <input type="text" id="rpgnome" name="rpgnome" required placeholder="Ex: Dungeons & Dragons 5ª Edição">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rpgeditora">Editora</label>
+                        <input type="text" id="rpgeditora" name="rpgeditora" required placeholder="Ex: Wizards of the Coast">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rpgano">Ano</label>
+                        <input type="number" id="rpgano" name="rpgano" required max="2026" placeholder="2014">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rpggenero">Gênero</label>
+                        <select id="rpggenero" name="rpggenero" required>
+                            <option value="">Selecione um gênero</option>
+                            <option value="fantasia">Fantasia</option>
+                            <option value="futurismo">Futurismo</option>
+                            <option value="sci-fi">Sci-Fi</option>
+                            <option value="terror">Terror</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rpgstatus">Status</label>
+                        <select id="rpgstatus" name="rpgstatus" required>
+                            <option value="">Selecione um status</option>
+                            <option value="completo">Completo</option>
+                            <option value="quero">Quero jogar</option>
+                            <option value="incompleto">Incompleto</option>
+                            <option value="abandonado">Abandonado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="rpgavaliacao">Avaliação (1-5)</label>
+                    <div class="rating">
+                        <span data-valor="1" class="star">☆</span>
+                        <span data-valor="2" class="star">☆</span>
+                        <span data-valor="3" class="star">☆</span>
+                        <span data-valor="4" class="star">☆</span>
+                        <span data-valor="5" class="star">☆</span>
+                    </div>
+                    <input type="hidden" id="nota" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="rpgcomentarios">Comentários</label>
+                    <textarea id="rpgcomentarios" name="rpgcomentarios" rows="4" placeholder="Escreva seus comentários sobre o sistema..."></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btnSalvar" id="btnSalvar">Salvar</button>
+                    <button type="button" class="btnCancelar" id="btnCancelar">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal">
+        <div class="modalContent">
+            <div class="modalHeader">
+                <h2>Confirmar Exclusão</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div id="excluirContent">
+                <p id="excluirMensagem">Tem certeza que deseja excluir este sistema?</p>
+                <div class="form-buttons" id="excluirBotoes">
+                    <button class="btnCancelarExcluir" id="cancelarExcluirBtn">Cancelar</button>
+                    <button class="btnConfirmarExcluir" id="confirmarExcluirBtn">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalDetalhe" class="modal">
+        <div class="modalContent">
+            <div class="modalHeader">
+                <h2 id="detalheTitulo">Detalhes do Sistema</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div id="detalheContent"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>RPGBOXD - Seu catálogo de avaliação pessoal de sistemas de rpg | Projeto acadêmico</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
